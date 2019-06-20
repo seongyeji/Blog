@@ -5,13 +5,25 @@ from django.shortcuts import get_object_or_404, redirect
 
 from django.utils import timezone
 
+from django.core.paginator import Paginator
+# 페이지네이션하귀 위해
+
 # 어떤 데이터를 어떻게 처리할지 함수로 정의해야됨
 
 def  home(request):
     # 홈이라는 함수를 선언한다 리퀘스트를 인자로 받는다.
     blogs = Blog.objects
     # 블로그의 객체를 블로그스에 담아준다
-    return render(request, 'home.html', {'blogs': blogs})
+
+    blog_list = Blog.objects.all()
+    # 블로그 객체를 세개를 한 페이지로 자르기
+    paginator = Paginator(blog_list, 3)
+
+    page = request.GET.get('page')
+    posts = paginator.get_page(page)
+    # 해당페이지로 이동하는
+
+    return render(request, 'home.html', {'blogs': blogs, 'posts':posts})
 
     # 쿼리셋과 메소드의 형식
     # 모델, 쿼리셋(objects).메소드
